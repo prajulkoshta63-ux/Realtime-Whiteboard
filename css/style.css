@@ -1,0 +1,112 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+}
+
+/* Navbar */
+.navbar {
+    height: 70px;
+    background: #1f2937;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+/* Main Layout */
+.main-container {
+    display: flex;
+    height: calc(100vh - 70px);
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    min-width: 250px;
+
+    background: white;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Sidebar Buttons */
+.sidebar button {
+    width: 100%;
+    padding: 12px;
+    margin: 6px 0;
+    border: none;
+    border-radius: 8px;
+    background: #ffffff;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: left;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.sidebar button:hover {
+    background: #2563eb;
+    color: white;
+    transform: translateX(5px);
+}
+.sidebar {
+    overflow-y: auto;
+}
+
+/* Canvas Area */
+.canvas-container {
+    flex: 1;
+    background: #ddd;
+}
+
+canvas {
+    display: block;
+    background: white;
+}
+.canvas-container {
+    flex: 1;
+    display: flex;
+    background: #ddd;
+}
+
+#board {
+    width: 100%;
+    height: 100%;
+    background: white;
+    display: block;
+}
+
+.sidebar h3 {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    color: #1f2937;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 5px;
+}
+.sidebar hr {
+    margin: 15px 0;
+    border: none;
+    border-top: 1px solid #ddd;
+}
+#colorPicker {
+    width: 100%;
+    height: 45px;
+    border: none;
+    cursor: pointer;
+}
+#brushSize {
+    width: 100%;
+}
+.active-tool{
+    background:#2563eb !important;
+    color:white !important;
+}

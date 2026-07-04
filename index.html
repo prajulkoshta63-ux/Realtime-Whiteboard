@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realtime Whiteboard</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <header class="navbar">
+        <h2>🖌 Realtime Whiteboard</h2>
+
+        <div class="nav-buttons">
+            <button id="saveBtn">💾 Save</button>
+            <button id="exportBtn">📷 Export</button>
+        </div>
+    </header>
+
+    <!-- Toolbar -->
+    <div class="main-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <h3>TOOLS</h3>
+
+        <button id="select">🖱 Select</button>
+
+        <button id="pencil">✏ Pencil</button>
+
+        <button id="rectangle">▭ Rectangle</button>
+
+        <button id="circle">○ Circle</button>
+
+        <button id="line">／ Line</button>
+
+        <button id="eraser">🩹 Eraser</button>
+
+        <button id="text">🔤 Text</button>
+        
+        <hr>
+
+        <h3>SETTINGS</h3>
+
+        <input type="color" id="colorPicker">
+
+        <input
+            type="range"
+            id="brushSize"
+            min="1"
+            max="20"
+            value="3">
+
+        
+         <label for="fontSize">Font Size</label>
+
+         <input
+            type="number"
+            id="fontSize"
+            min="10"
+            max="100"
+            value="24">
+        <hr>
+        <h3>ACTIONS</h3>
+
+        <button id="undo">↩ Undo</button>
+
+        <button id="redo">↪ Redo</button>
+
+        <button id="clearBtn">🗑 Clear</button>
+
+    </aside>
+
+
+    <!-- Canvas -->
+    <div class="canvas-container">
+        <canvas id="board"></canvas>
+    </div>
+
+    <script src="js/canvas.js"></script>
+    <script src="js/tools.js"></script>
+    <script src="js/draw.js"></script>
+    <script src="js/history.js"></script>
+    <script src="js/export.js"></script>
+    <script src="js/save.js"></script>
+    <script src="js/clear.js"></script>
+
+</body>
+</html>
