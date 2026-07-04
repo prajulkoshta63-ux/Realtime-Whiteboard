@@ -57,7 +57,7 @@ textBtn.addEventListener("click", () => {
 
     currentTool = "text";
 
-    setActiveButton(textBtn);
+    //setActiveButton(textBtn);
 
     console.log("Text Selected");
 
@@ -68,7 +68,7 @@ selectBtn.addEventListener("click", () => {
 
     currentTool = "select";
 
-    setActiveButton(selectBtn);
+    //setActiveButton(selectBtn);
 
     console.log("Select Tool");
 
