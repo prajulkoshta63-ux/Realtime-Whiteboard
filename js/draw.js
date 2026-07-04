@@ -1,90 +1,128 @@
-// All shapes will be stored here
+// ===========================
+// DRAW.JS
+// ===========================
+
+// All Shapes
 let shapes = [];
 
-// Selected shape
-let selectedShape = null;
-let offsetX = 0;
-let offsetY = 0;
-// Dragging status
-let isDragging = false;
+// Drawing Status
 let drawing = false;
 
+// Mouse Start Position
 let startX = 0;
 let startY = 0;
+
+// Canvas Snapshot
 let snapshot = null;
 
+// Selection
+let selectedShape = null;
+let isDragging = false;
 
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+
+
+// ===========================
 // Mouse Down
+// ===========================
+
 canvas.onmousedown = function (e) {
 
-    // Text Tool
-    if (currentTool === "text") {
+    startX = e.offsetX;
+    startY = e.offsetY;
+   // ===========================
+// Mouse Up
+// ===========================
 
-        const text = prompt("Enter your text:");
+canvas.onmouseup = function (e) {
 
-        if (text) {
+    // Stop Dragging
+    if (currentTool === "select") {
 
-            
-            const fontSize = fontSizeInput.value;
-            ctx.fillStyle = colorPicker.value;
-            const fontFamily = prompt("Font Family (Arial, Times New Roman, Verdana):", "Arial");
+        isDragging = false;
+        selectedShape = null;
 
-            ctx.font = `${fontSize}px ${fontFamily}`;
-
-            ctx.fillText(text, e.offsetX, e.offsetY);
-
-            saveState();
-        }
+        saveState();
 
         return;
     }
-// Select Tool
- if (currentTool === "select") {
 
-    selectedShape = getShapeAt(e.offsetX, e.offsetY);
+    // Stop Drawing
+    drawing = false;
 
-    if (selectedShape) {
+    // Rectangle Save
+    if (currentTool === "rectangle") {
 
-        isDragging = true;
+        shapes.push({
 
-        offsetX = e.offsetX - selectedShape.x;
-        offsetY = e.offsetY - selectedShape.y;
+            type: "rectangle",
 
-        console.log("Selected:", selectedShape);
+            x: startX,
+            y: startY,
 
-    } else {
+            width: e.offsetX - startX,
+            height: e.offsetY - startY,
 
-        console.log("No Shape Selected");
+            color: colorPicker.value,
+            lineWidth: brushSize.value
+
+        });
+
+        drawAllShapes();
 
     }
 
-    return;
+    saveState();
+
 };
 
+
+// ===========================
+// Mouse Leave
+// ===========================
+
+canvas.onmouseleave = function () {
+
+    drawing = false;
+
+    isDragging = false;
+
+};
+    // ===========================
 // Mouse Move
+// ===========================
+
 canvas.onmousemove = function (e) {
-    // Move Selected Shape
- if (currentTool === "select" && isDragging && selectedShape) {
 
-    selectedShape.x = e.offsetX - offsetX;
-    selectedShape.y = e.offsetY - offsetY;
+    // -------------------------
+    // Move Selected Rectangle
+    // -------------------------
+    if (currentTool === "select" && isDragging && selectedShape) {
 
-    drawAllShapes();
+        selectedShape.x = e.offsetX - dragOffsetX;
+        selectedShape.y = e.offsetY - dragOffsetY;
 
-    return;
-}
+        drawAllShapes();
+
+        return;
+    }
+
     if (!drawing) return;
 
+    // -------------------------
     // Pencil
-    // Pencil + Eraser
+    // -------------------------
     if (currentTool === "pencil" || currentTool === "eraser") {
 
-    ctx.lineTo(e.offsetX, e.offsetY);
-    ctx.stroke();
+        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.stroke();
 
-}
+    }
 
+    // -------------------------
     // Rectangle Preview
+    // -------------------------
     if (currentTool === "rectangle") {
 
         ctx.putImageData(snapshot, 0, 0);
@@ -95,105 +133,109 @@ canvas.onmousemove = function (e) {
         ctx.strokeRect(startX, startY, width, height);
 
     }
+
+    // -------------------------
     // Line Preview
- if (currentTool === "line") {
+    // -------------------------
+    if (currentTool === "line") {
 
-    ctx.putImageData(snapshot, 0, 0);
+        ctx.putImageData(snapshot, 0, 0);
 
-    ctx.beginPath();
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.stroke();
 
-    ctx.moveTo(startX, startY);
+    }
 
-    ctx.lineTo(e.offsetX, e.offsetY);
+    // -------------------------
+    // Circle Preview
+    // -------------------------
+    if (currentTool === "circle") {
 
-    ctx.stroke();
+        ctx.putImageData(snapshot, 0, 0);
 
-}
- // Circle Preview
- if (currentTool === "circle") {
+        const radius = Math.sqrt(
+            Math.pow(e.offsetX - startX, 2) +
+            Math.pow(e.offsetY - startY, 2)
+        );
 
-    // Purana canvas restore karo
-    ctx.putImageData(snapshot, 0, 0);
+        ctx.beginPath();
+        ctx.arc(startX, startY, radius, 0, Math.PI * 2);
+        ctx.stroke();
 
-    // Radius calculate karo
-    const radius = Math.sqrt(
-        Math.pow(e.offsetX - startX, 2) +
-        Math.pow(e.offsetY - startY, 2)
+    }
+
+};
+    // -------------------------
+    // TEXT TOOL
+    // -------------------------
+    if (currentTool === "text") {
+
+        const text = prompt("Enter Text");
+
+        if (text) {
+
+            ctx.fillStyle = colorPicker.value;
+            ctx.font = `${fontSizeInput.value}px Arial`;
+
+            ctx.fillText(text, startX, startY);
+
+            saveState();
+
+        }
+
+        return;
+    }
+
+    // -------------------------
+    // SELECT TOOL
+    // -------------------------
+    if (currentTool === "select") {
+
+        selectedShape = getShapeAt(startX, startY);
+
+        if (selectedShape) {
+
+            isDragging = true;
+
+            dragOffsetX = startX - selectedShape.x;
+            dragOffsetY = startY - selectedShape.y;
+
+        }
+
+        return;
+    }
+
+    // -------------------------
+    // DRAW START
+    // -------------------------
+
+    drawing = true;
+
+    snapshot = ctx.getImageData(
+        0,
+        0,
+        canvas.width,
+        canvas.height
     );
 
-    // Circle draw karo
     ctx.beginPath();
-    ctx.arc(startX, startY, radius, 0, Math.PI * 2);
-    ctx.stroke();
-
-}
-
-
+    ctx.moveTo(startX, startY);
 
 };
+// ===========================
+// Draw All Shapes
+// ===========================
 
-// Mouse Up
-// Mouse Up
-canvas.onmouseup = function (e) {
-
-    console.log("Mouse Up");
-
-    if (currentTool === "rectangle") {
-
-        console.log("Rectangle Saved");
-
-        shapes.push({
-            
-            type: "rectangle",
-            x: startX,
-            y: startY,
-            width: e.offsetX - startX,
-            height: e.offsetY - startY
-        });
-        drawAllShapes();
-        console.log(shapes);
-    }
-
-    drawing = false;
-    isDragging = false;
-    selectedShape = null;
-    saveState();
-};
-
-
-// Mouse Leave
-canvas.onmouseleave = function () {
-
-    drawing = false;
-
-};
-
-function getShapeAt(x, y) {
-
-    for (let i = shapes.length - 1; i >= 0; i--) {
-
-        let shape = shapes[i];
-
-        if (
-            shape.type === "rectangle" &&
-            x >= shape.x &&
-            x <= shape.x + shape.width &&
-            y >= shape.y &&
-            y <= shape.y + shape.height
-        ) {
-            return shape;
-        }
-    }
-
-    return null;
-}
 function drawAllShapes() {
 
-    // Canvas clear karo
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Har shape draw karo
     for (let shape of shapes) {
+
+        ctx.strokeStyle = shape.color || "#000";
+        ctx.lineWidth = shape.lineWidth || 2;
 
         if (shape.type === "rectangle") {
 
@@ -211,3 +253,34 @@ function drawAllShapes() {
 }
 
 
+// ===========================
+// Get Shape At Mouse Position
+// ===========================
+
+function getShapeAt(x, y) {
+
+    for (let i = shapes.length - 1; i >= 0; i--) {
+
+        const shape = shapes[i];
+
+        if (shape.type === "rectangle") {
+
+            const left = Math.min(shape.x, shape.x + shape.width);
+            const right = Math.max(shape.x, shape.x + shape.width);
+            const top = Math.min(shape.y, shape.y + shape.height);
+            const bottom = Math.max(shape.y, shape.y + shape.height);
+
+            if (
+                x >= left &&
+                x <= right &&
+                y >= top &&
+                y <= bottom
+            ) {
+                return shape;
+            }
+        }
+    }
+
+    return null;
+
+}
