@@ -1,93 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Realtime Whiteboard</title>
 
-    <link rel="stylesheet" href="css/style.css">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Realtime Whiteboard</title>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:,">
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+
 <body>
 
-    <!-- Navbar -->
-    <header class="navbar">
-        <h2>🖌 Realtime Whiteboard</h2>
+  <!-- Navbar -->
+  <header class="navbar">
 
-        <div class="nav-buttons">
-            <button id="saveBtn">💾 Save</button>
-            <button id="exportBtn">📷 Export</button>
-        </div>
-    </header>
+    <div class="nav-left">
+      <div class="logo">🖌</div>
 
-    <!-- Toolbar -->
-    <div class="main-container">
+      <div class="title-area">
+        <h2>Professional Whiteboard</h2>
+        <span>Version 2.0</span>
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <button id="saveBtn" title="Save (Ctrl + S)">💾 Save</button>
+
+      <button id="openProjectBtn" title="Open (Ctrl + O)">📂 Open</button>
+
+      <button id="exportBtn" title="Export">📷 Export</button>
+    </div>
+
+  </header>
+
+  <!-- Toolbar -->
+  <div class="main-container">
 
     <!-- Sidebar -->
     <aside class="sidebar">
 
-        <h3>TOOLS</h3>
+      <h3>TOOLS</h3>
 
-        <button id="select">🖱 Select</button>
+      <button id="select" title="Select (S)">
+        <i data-lucide="mouse-pointer-2"></i>
+        <span>Select</span>
+      </button>
 
-        <button id="pencil">✏ Pencil</button>
+      <button id="pencil" title="Pencil (P)">✏ Pencil</button>
 
-        <button id="rectangle">▭ Rectangle</button>
+      <button id="rectangle" title="Rectangle (R)">▭ Rectangle</button>
 
-        <button id="circle">○ Circle</button>
+      <button id="circle" title="Circle (C)">○ Circle</button>
 
-        <button id="line">／ Line</button>
+      <button id="line" title="Line (L)">／ Line</button>
 
-        <button id="eraser">🩹 Eraser</button>
+      <button id="eraser" title="Eraser (E)">🩹 Eraser</button>
 
-        <button id="text">🔤 Text</button>
-        
-        <hr>
+      <button id="text" title="Text (T)">🔤 Text</button>
 
-        <h3>SETTINGS</h3>
+      <button id="image" title="Image (I)">🖼 Image</button>
 
-        <input type="color" id="colorPicker">
+      <button id="bringFront">⬆️Bring Front</button>
+      <button id="bringForward">⬆ Bring Forward</button>
 
-        <input
-            type="range"
-            id="brushSize"
-            min="1"
-            max="20"
-            value="3">
+      <button id="sendBackward">⬇ Send Backward</button>
+      <button id="sendBack">⬇️Send Back</button>
 
-        
-         <label for="fontSize">Font Size</label>
+      <button id="pan" title="Pan (Space)">✋ Pan</button>
 
-         <input
-            type="number"
-            id="fontSize"
-            min="10"
-            max="100"
-            value="24">
-        <hr>
-        <h3>ACTIONS</h3>
+      <hr>
 
-        <button id="undo">↩ Undo</button>
+      <h3>SETTINGS</h3>
 
-        <button id="redo">↪ Redo</button>
+      <input type="color" id="colorPicker">
 
-        <button id="clearBtn">🗑 Clear</button>
+      <input type="range" id="brushSize" min="1" max="20" value="3">
 
+
+      <label for="fontSize">Font Size</label>
+
+      <input type="number" id="fontSize" min="10" max="100" value="24">
+      <hr>
+      <h3>ACTIONS</h3>
+
+      <button id="undo" title="Undo (Ctrl + Z)">↩ Undo</button>
+
+      <button id="redo" title="Redo (Ctrl + Y)">↪ Redo</button>
+
+      <button id="exportPNG">Export PNG</button>
+
+      <button id="clearBtn">🗑 Clear</button>
+
+      <input type="file" id="imageInput" accept="image/png,image/jpeg,image/jpg" style="display:none;">
+
+      <input type="file" id="projectFileInput" accept=".whiteboard,application/json" style="display:none;">
+
+      <label>
+        <input type="checkbox" id="fillShape">
+        Fill
+      </label>
+      <input type="color" id="fillColor" value="#00aaff">
     </aside>
 
 
     <!-- Canvas -->
     <div class="canvas-container">
-        <canvas id="board"></canvas>
+      <canvas id="board"></canvas>
+    </div>
+    <!-- Layers Panel -->
+    <aside class="layers-panel">
+
+      <h3>LAYERS</h3>
+
+      <div id="layersList">
+        <p>No Layers</p>
+      </div>
+
+    </aside>
+
+  </div> <!-- main-container -->
+
+  <!-- ======================================
+     EXPORT DIALOG
+====================================== -->
+  <div id="exportDialog" class="export-dialog hidden">
+
+    <div class="export-dialog-content">
+
+      <h2>Export</h2>
+
+      <div class="export-group">
+        <label for="exportFormat">Format</label>
+        <select id="exportFormat">
+          <option value="png">PNG</option>
+          <option value="jpg">JPG</option>
+          <option value="pdf">PDF</option>
+          <option value="svg">SVG</option>
+        </select>
+      </div>
+
+      <div class="export-group">
+        <label for="exportResolution">Resolution</label>
+        <select id="exportResolution">
+          <option value="1">1x</option>
+          <option value="2">2x</option>
+          <option value="4">4x</option>
+        </select>
+      </div>
+
+      <div class="export-group">
+        <label for="exportBackground">Background</label>
+        <select id="exportBackground">
+          <option value="white">White</option>
+          <option value="transparent">Transparent</option>
+        </select>
+      </div>
+
+      <div class="export-group">
+        <label for="exportFileName">File Name</label>
+        <input type="text" id="exportFileName" value="whiteboard">
+      </div>
+
+      <div class="export-actions">
+        <button id="cancelExport">Cancel</button>
+        <button id="confirmExport">Export</button>
+      </div>
+
     </div>
 
-    <script src="js/canvas.js"></script>
-    <script src="js/tools.js"></script>
-    <script src="js/draw.js"></script>
-  <!--- <script src="js/selection.js"></script> -->
-    <script src="js/history.js"></script>
-    <script src="js/export.js"></script>
-    <script src="js/save.js"></script>
-    <script src="js/clear.js"></script>
+  </div>
 
+  <script src="js/canvas.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/tools.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/selection.js"></script>
+  <script src="js/clipboard.js"></script>
+  <script src="js/layers.js"></script>
+  <script src="js/draw.js"></script>
+  <script src="js/history.js"></script>
+  <script src="js/jspdf.umd.min.js"></script>
+  <script src="js/export.js"></script>
+  <script src="js/save.js"></script>
+  <script src="js/clear.js"></script>
+
+
+  <script>
+lucide.createIcons();
+</script>
 </body>
+
 </html>

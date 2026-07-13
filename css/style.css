@@ -31,33 +31,59 @@ body {
     width: 250px;
     min-width: 250px;
 
-    background: white;
-    padding: 15px;
+    background: #ffffff;
+
+    border-right: 1px solid #e5e7eb;
+
+    padding: 20px;
+
     display: flex;
     flex-direction: column;
-    gap: 10px;
+
+    gap: 14px;
+
+    overflow-y: auto;
 }
 
 /* Sidebar Buttons */
 .sidebar button {
     width: 100%;
-    padding: 12px;
+
+    height: 54px;
+
     margin: 6px 0;
-    border: none;
-    border-radius: 8px;
+
+    border: 1px solid #ececec;;
+
+    border-radius: 12px;
+
     background: #ffffff;
+
     cursor: pointer;
-    font-size: 16px;
+
+    font-size: 15px;
+
+    font-weight: 500;
+
     text-align: left;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+    padding-left: 18px;
+
+    transition: 0.2s;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.sidebar button:hover {
-    background: #2563eb;
-    color: white;
-    transform: translateX(5px);
+.sidebar button:hover{
+    background:#f8fbff;
+
+    border-color:#3b82f6;
+
+    color:#2563eb;
+
+    transform:translateX(3px);
 }
+
 .sidebar {
     overflow-y: auto;
 }
@@ -72,41 +98,323 @@ canvas {
     display: block;
     background: white;
 }
+
 .canvas-container {
     flex: 1;
+
     display: flex;
-    background: #ddd;
+
+    padding: 18px;
+
+    background: #f3f4f6;
 }
 
 #board {
     width: 100%;
     height: 100%;
-    background: white;
+
     display: block;
+
+    background: white;
+
+    border-radius: 14px;
+
+    box-shadow: 0 8px 30px rgba(0,0,0,.08);
 }
 
 .sidebar h3 {
-    margin-top: 15px;
-    margin-bottom: 10px;
-    color: #1f2937;
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 5px;
+    font-size: 13px;
+    font-weight:700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 2px;
+
+    color: #6b7280;
+
+    margin-top: 12px;
+
+    margin-bottom: 6px;
+
+    border: none;
+
+    padding-bottom: 0;
 }
+
 .sidebar hr {
     margin: 15px 0;
     border: none;
     border-top: 1px solid #ddd;
 }
+
 #colorPicker {
     width: 100%;
     height: 45px;
     border: none;
     cursor: pointer;
 }
+
 #brushSize {
     width: 100%;
 }
-.active-tool{
-    background:#2563eb !important;
-    color:white !important;
+
+.active-tool {
+    background: #2563eb !important;
+    color: white !important;
+}
+
+/* ---------- Layers Panel ---------- */
+
+.layers-panel {
+    width: 250px;
+    min-width: 250px;
+    background: white;
+    border-left: 1px solid #ddd;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.layers-panel h3 {
+    margin-bottom: 10px;
+    color: #1f2937;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 5px;
+}
+
+#layersList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.layer-item {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    background: white;
+    transition: .2s;
+}
+
+.layer-item:hover {
+    background: #f3f4f6;
+}
+
+.layer-item.active {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+}
+
+.layer-item.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
+.layer-item {
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    border-radius: 8px;
+    background: white;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: 0.2s;
+    user-select: none;
+}
+
+.layer-item:hover {
+    background: #f3f4f6;
+    border-color: #2563eb;
+}
+
+.layer-item.active {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+}
+
+.layer-item.dragging {
+    opacity: .5;
+    cursor: grabbing;
+}
+
+/* ======================================
+   EXPORT DIALOG
+=========================================*/
+
+.hidden {
+    display: none !important;
+}
+
+.export-dialog {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: rgba(0, 0, 0, 0.45);
+
+    z-index: 9999;
+}
+
+.export-dialog-content {
+    width: 400px;
+    max-width: 90%;
+
+    background: #ffffff;
+    border-radius: 12px;
+
+    padding: 20px;
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+}
+
+.export-dialog-content h2 {
+    margin-bottom: 20px;
+}
+
+.export-group {
+    display: flex;
+    flex-direction: column;
+
+    margin-bottom: 15px;
+}
+
+.export-group label {
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.export-group select,
+.export-group input {
+    padding: 8px 10px;
+
+    border: 1px solid #ccc;
+    border-radius: 6px;
+
+    font-size: 14px;
+}
+
+.export-actions {
+    display: flex;
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+.export-actions button {
+    padding: 8px 16px;
+
+    cursor: pointer;
+}
+
+.active-tool {
+    background: #2196f3;
+    color: white;
+}
+
+/* ==========================
+   Modern Navbar
+========================== */
+
+.navbar {
+    height: 70px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0 24px;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .05);
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.logo {
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 22px;
+
+    background: #2563eb;
+    color: #fff;
+
+    border-radius: 12px;
+}
+
+.title-area h2 {
+    margin: 0;
+
+    font-size: 22px;
+    font-weight: 700;
+
+    color: #111827;
+}
+
+.title-area span {
+    font-size: 13px;
+
+    color: #6b7280;
+}
+
+.nav-right {
+    display: flex;
+    gap: 12px;
+}
+
+.nav-right button {
+    padding: 10px 18px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    background: #2563eb;
+
+    color: white;
+
+    font-weight: 600;
+
+    transition: .2s;
+}
+
+.nav-right button:hover {
+    transform: translateY(-2px);
+
+    background: #1d4ed8;
+}
+/* ======================================
+   LUCIDE ICONS
+====================================== */
+
+.sidebar button{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.sidebar button svg{
+    width:18px;
+    height:18px;
+    stroke-width:2;
+    flex-shrink:0;
 }

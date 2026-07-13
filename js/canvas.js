@@ -1,5 +1,7 @@
 const canvas = document.getElementById("board");
-const ctx = canvas.getContext("2d");
+const ctx = canvas.getContext("2d", {
+  willReadFrequently: true,
+});
 
 canvas.width = canvas.parentElement.clientWidth;
 canvas.height = canvas.parentElement.clientHeight;
@@ -13,17 +15,47 @@ const colorPicker = document.getElementById("colorPicker");
 
 // Brush Size
 const brushSize = document.getElementById("brushSize");
+const fillShape = document.getElementById("fillShape");
+const fillColor = document.getElementById("fillColor");
 const fontSizeInput = document.getElementById("fontSize");
+
 // Default Values
 ctx.strokeStyle = colorPicker.value;
 ctx.lineWidth = brushSize.value;
 
 // Change Color
 colorPicker.addEventListener("input", () => {
-    ctx.strokeStyle = colorPicker.value;
+  ctx.strokeStyle = colorPicker.value;
 });
 
 // Change Brush Size
 brushSize.addEventListener("input", () => {
-    ctx.lineWidth = brushSize.value;
+  ctx.lineWidth = brushSize.value;
+});
+// -----------------------
+// Change Fill Color
+// -----------------------
+fillColor.addEventListener("input", () => {
+  if (!selectedShape) return;
+
+  if (selectedShape.type === "rectangle" || selectedShape.type === "circle") {
+    selectedShape.fillColor = fillColor.value;
+
+    drawAllShapes();
+    saveState();
+  }
+});
+
+// -----------------------
+// Fill ON/OFF
+// -----------------------
+fillShape.addEventListener("change", () => {
+  if (!selectedShape) return;
+
+  if (selectedShape.type === "rectangle" || selectedShape.type === "circle") {
+    selectedShape.fill = fillShape.checked;
+
+    drawAllShapes();
+    saveState();
+  }
 });

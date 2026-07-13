@@ -7,62 +7,70 @@ let redoHistory = [];
 
 // Save Current Canvas
 function saveState() {
+  history.push(JSON.stringify(shapes));
 
-    history.push(canvas.toDataURL());
-
-    // New drawing ke baad Redo clear
-    redoHistory = [];
-
+  // New drawing ke baad Redo clear
+  redoHistory = [];
 }
 
 // Undo
 function undo() {
+  console.log("Undo:", history.length);
+  if (history.length <= 1) return;
 
-    if (history.length <= 1) return;
+  redoHistory.push(history.pop());
 
-    // Last state ko Redo me bhejo
-    redoHistory.push(history.pop());
+  shapes = JSON.parse(history[history.length - 1]);
 
-    let img = new Image();
+  selectedShape = null;
 
-    img.src = history[history.length - 1];
-
-    img.onload = function () {
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        ctx.drawImage(img, 0, 0);
-
-    };
-
+  requestRender();
 }
 
 // Redo
 function redo() {
+  console.log("Redo:", redoHistory.length);
+  if (redoHistory.length === 0) return;
 
-    if (redoHistory.length === 0) return;
+  const state = redoHistory.pop();
 
-    let state = redoHistory.pop();
+  history.push(state);
 
-    history.push(state);
+  shapes = JSON.parse(state);
 
-    let img = new Image();
+  selectedShape = null;
 
-    img.src = state;
-
-    img.onload = function () {
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        ctx.drawImage(img, 0, 0);
-
-    };
-
+  requestRender();
 }
 
-// Save Blank Canvas
+// ======================================
+// PAGE LOAD
+// ======================================
+
 window.onload = () => {
+  loadFromLocalStorage();
 
-    saveState();
+  history.push(JSON.stringify(shapes));
 
+  drawAllShapes();
 };
+// ======================================
+// SAVE TO LOCAL STORAGE
+// ======================================
+
+function saveToLocalStorage() {
+  localStorage.setItem("whiteboard", JSON.stringify(shapes));
+}
+// ======================================
+// LOAD FROM LOCAL STORAGE
+// ======================================
+
+function loadFromLocalStorage() {
+  const data = localStorage.getItem("whiteboard");
+
+  if (!data) return;
+
+  shapes = JSON.parse(data);
+
+  drawAllShapes();
+}

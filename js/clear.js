@@ -1,13 +1,22 @@
 const clearBtn = document.getElementById("clearBtn");
 
 clearBtn.addEventListener("click", () => {
+  const confirmClear = confirm(
+    "Are you sure you want to clear the whiteboard?",
+  );
 
-    const confirmClear = confirm("Are you sure you want to clear the whiteboard?");
+  if (!confirmClear) return;
 
-    if (!confirmClear) return;
+  shapes = [];
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  selectedShape = null;
 
-    saveState();
+  drawAllShapes();
 
+  // Delete saved whiteboard
+  localStorage.removeItem("whiteboard");
+
+  saveState();
+
+  alert("Whiteboard Cleared Successfully!");
 });
